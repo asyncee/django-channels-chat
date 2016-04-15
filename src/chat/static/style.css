@@ -1,0 +1,103 @@
+body, div, p {
+    margin: 0;
+    padding: 0;
+    font-size: 15px;
+    font-family: 'Roboto', sans-serif;
+}
+
+.message {
+    margin: 10px 0;
+}
+.message:first-child {
+    margin-top: 0;
+}
+.message:last-child {
+    margin-bottom: 0;
+}
+
+.message--message {
+    color: green;
+}
+.message--info {
+    color: #5062ce;
+}
+.message--system {
+    color: #ce5058
+}
+
+.message__username {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+
+.chat-window {
+    border: 1px solid rgba(0,0,0,0.1);
+    height: 600px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin: 15px;
+}
+.connect-toolbar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    background-color: #6f5499;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    opacity: 1;
+    transition: 1s all;
+}
+.connect-toolbar--online {
+    transform: translateY(-100%);
+    opacity: 0;
+    backface-visibility: hidden;
+}
+
+.connect-toolbar__username {
+    padding: 10px;
+    border-radius: 10px 0 0 10px;
+    background: none;
+    outline: none;
+    border: 1px solid #cdbfe3;
+    color: white;
+}
+.connect-toolbar__connect-button {
+    padding: 10px;
+    border-radius: 0 10px 10px 0;
+    background: none;
+    outline: none;
+    border: 1px solid #cdbfe3;
+    border-left: none;
+    color: white;
+
+    cursor: pointer;
+}
+.connect-toolbar__connect-button:hover {
+    background-color: white;
+    color: #6f5499;
+}
+
+.message-toolbar__text-input {
+    width: calc(100% - 20px);
+    height: 30px;
+    border: none;
+    border-top: 1px solid rgba(0,0,0,0.1);
+    padding: 10px;
+    outline: none;
+    font-size: 17px;
+}
+
+.messages {
+    flex: 1;
+    padding: 15px;
+    font-size: 17px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
