@@ -46,16 +46,19 @@ class Chat:
 
     def on_chat_command(self, message, payload, **kwargs):
         user = message.channel_session['user']
-        command = payload['text']
+        command, *args = payload['text'].strip().split()
 
-        if command.startswith('/me') and len(command.split()) > 1:
-            text = ' '.join(command.split()[1:])
-            message = messages.system('{} {}'.format(user, text))
+        if command == '/me' and len(args) >= 1:
+            text = ' '.join(args)
+            message = messages.info('{} {}'.format(user, text))
             self.broadcast(message)
 
         else:
             msg = messages.system(
-                _('Error: no such command %(command)') % {'command': command})
+                _(
+                    'Error: no such command %(command)s '
+                    'with arguments "%(args)s"'
+                ) % {'command': command, 'args': ' '.join(args)})
             self.send(message.reply_channel, msg)
 
 

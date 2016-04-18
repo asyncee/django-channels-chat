@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-18 10:40+0000\n"
+"POT-Creation-Date: 2016-04-18 16:59+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,10 +34,15 @@ msgstr "Пользователь %(username)s присоединился к ча
 msgid "User %(user)s left chat"
 msgstr "Пользователь %(user)s покинул чат"
 
-#: templates/chat/chat.html:154
+#: engine.py:59
+#, python-format
+msgid "Error: no such command %(command)s with arguments \"%(args)s\""
+msgstr "Ошибка: не существует команды %(command)s с аргументами \"%(args)s\""
+
+#: templates/chat/chat.html:157
 msgid "Join chat"
 msgstr "Присоединиться к чату"
 
-#: templates/chat/chat.html:155
+#: templates/chat/chat.html:158
 msgid "Enter your message"
 msgstr "Введите сообщение"

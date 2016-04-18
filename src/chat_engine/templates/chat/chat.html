@@ -30,9 +30,12 @@
                 let className = "message message--" + this.props.type;
                 return (
                     <div className={className}>
-                        <span className="message__username">
-                            {this.props.user}:
-                        </span>
+                        {this.props.user ?
+                            <span className="message__username">
+                                {this.props.user}:
+                            </span>
+                            : null
+                        }
                         <span className="message__text">
                             {this.props.text}
                         </span>

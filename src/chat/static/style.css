@@ -28,6 +28,7 @@ body, div, p {
 .message__username {
     font-weight: bold;
     margin-right: 5px;
+    color: #404040;
 }
 
 
