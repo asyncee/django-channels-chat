@@ -1,6 +1,7 @@
 import json
 
 from django.dispatch import receiver
+from django.utils.translation import ugettext as _
 from channels import Group
 
 from . import events
@@ -27,14 +28,16 @@ class Chat:
 
     def on_user_joined(self, message, payload, **kwargs):
         message.channel_session['user'] = payload['username']
-        self.send(message.reply_channel, messages.system('Добро пожаловать в чат!'))
-        self.broadcast(messages.system('Пользователь {} вошёл в чат'.format(payload['username'])))
+        self.send(
+            message.reply_channel, messages.system(_('Welcome to the chat!')))
+        self.broadcast(
+            messages.system(_('User %(username)s joined chat') % payload))
         self.group.add(message.reply_channel)
 
     def on_user_left(self, message, **kwargs):
         self.group.discard(message.reply_channel)
-        user = message.channel_session['user']
-        self.broadcast(messages.system('Пользователь {} покинул чат'.format(user)))
+        self.broadcast(messages.system(
+            _('User %(user)s left chat') % message.channel_session))
 
     def on_chat_message(self, message, payload, **kwargs):
         user = message.channel_session['user']
@@ -42,7 +45,18 @@ class Chat:
         self.broadcast(message)
 
     def on_chat_command(self, message, payload, **kwargs):
-        pass
+        user = message.channel_session['user']
+        command = payload['text']
+
+        if command.startswith('/me') and len(command.split()) > 1:
+            text = ' '.join(command.split()[1:])
+            message = messages.system('{} {}'.format(user, text))
+            self.broadcast(message)
+
+        else:
+            msg = messages.system(
+                _('Error: no such command %(command)') % {'command': command})
+            self.send(message.reply_channel, msg)
 
 
 chat = Chat()
