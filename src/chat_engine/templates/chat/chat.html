@@ -1,4 +1,4 @@
-{% load static %}
+{% load static i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -90,7 +90,7 @@
                                 className="connect-toolbar__username"
                                 type="text"
                                 ref="username" />
-                            <button className="connect-toolbar__connect-button" onClick={this.connect}>Войти в чат</button>
+                            <button className="connect-toolbar__connect-button" onClick={this.connect}>{this.props.joinButtonText}</button>
                         </div>
 
                         <MessagesWindow messages={this.state.messages} />
@@ -99,7 +99,7 @@
                             <input onKeyPress={this.onMessage}
                                 ref="message_input"
                                 type="text"
-                                placeholder="Введите сообщение"
+                                placeholder={this.props.messageInputPlaceholder}
                                 className="message-toolbar__text-input" />
                         </div>
                     </div>
@@ -149,8 +149,12 @@
             }
         }
 
-        let username = localStorage.username;
-        ReactDOM.render(<ChatWindow username={username} />, document.getElementById('app'))
+        let options = {
+            username: localStorage.username,
+            joinButtonText: '{% trans "Join chat" %}',
+            messageInputPlaceholder: '{% trans "Enter your message" %}'
+        }
+        ReactDOM.render(<ChatWindow {...options} />, document.getElementById('app'))
     </script>
 </body>
 </html>
