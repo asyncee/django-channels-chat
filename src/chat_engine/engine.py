@@ -2,64 +2,62 @@ import json
 
 from django.dispatch import receiver
 from django.utils.translation import ugettext as _
+from django.utils.module_loading import import_string
+from channels.sessions import channel_session
 from channels import Group
 
-from . import events
 from . import messages
+from . import conf
 
 
-class Chat:
-
-    def __init__(self):
-        events.user_joined.connect(self.on_user_joined)
-        events.user_left.connect(self.on_user_left)
-        events.chat_message.connect(self.on_chat_message)
-        events.chat_command.connect(self.on_chat_command)
-
-    @property
-    def group(self):
-        return Group('chat')
-
-    def broadcast(self, message):
-        self.group.send(message)
-
-    def send(self, channel, message):
-        channel.send(message)
-
-    def on_user_joined(self, message, payload, **kwargs):
-        message.channel_session['user'] = payload['username']
-        self.send(
-            message.reply_channel, messages.system(_('Welcome to the chat!')))
-        self.broadcast(
-            messages.system(_('User %(username)s joined chat') % payload))
-        self.group.add(message.reply_channel)
-
-    def on_user_left(self, message, **kwargs):
-        self.group.discard(message.reply_channel)
-        self.broadcast(messages.system(
-            _('User %(user)s left chat') % message.channel_session))
-
-    def on_chat_message(self, message, payload, **kwargs):
-        user = message.channel_session['user']
-        message = messages.info(payload['text'], user)
-        self.broadcast(message)
-
-    def on_chat_command(self, message, payload, **kwargs):
-        user = message.channel_session['user']
-        command, *args = payload['text'].strip().split()
-
-        if command == '/me' and len(args) >= 1:
-            text = ' '.join(args)
-            message = messages.info('{} {}'.format(user, text))
-            self.broadcast(message)
-
-        else:
-            msg = messages.system(
-                _(
-                    'Error: no such command %(command)s '
-                    'with arguments "%(args)s"'
-                ) % {'command': command, 'args': ' '.join(args)})
-            self.send(message.reply_channel, msg)
+@channel_session
+def on_connect(message):
+    print('on connect')
+    payload = message.content['text']
+    print(payload)
+    message.channel_session['user'] = payload['username']
+    message.reply_channel.send(messages.system(_('Welcome to the chat!')))
+    Group('chat').send(messages.system(_('User %(username)s joined chat') % payload))
+    Group('chat').add(message.reply_channel)
 
 
-chat = Chat()
+@channel_session
+def on_disconnect(message):
+    print('on disconnect')
+    Group('chat').discard(message.reply_channel)
+    Group('chat').send(messages.system(
+        _('User %(user)s left chat') % message.channel_session))
+
+
+@channel_session
+def on_message(message):
+    print('on message')
+    payload = message.content['text']
+    user = message.channel_session['user']
+    message = messages.info(payload['text'], user)
+    Group('chat').send(message)
+
+
+@channel_session
+def on_command(message):
+    print('on command')
+    payload = message.content['text']
+    user = message.channel_session['user']
+    command, *args = payload['text'].strip().split()
+
+    if command == '/me' and len(args) >= 1:
+        text = ' '.join(args)
+        message = messages.info('{} {}'.format(user, text))
+        Group('chat').send(message)
+
+    else:
+        msg = messages.system(
+            _(
+                'Error: no such command %(command)s '
+                'with arguments "%(args)s"'
+            ) % {'command': command, 'args': ' '.join(args)})
+        message.reply_channel.send(msg)
+
+
+def get_engine():
+    return import_string(conf.CHAT_ENGINE)

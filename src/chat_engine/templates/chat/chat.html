@@ -114,7 +114,7 @@
                 this.setState({username: username})
                 localStorage.username = username;
 
-                let socket = new WebSocket("ws://" + location.host + "/chat/");
+                let socket = new WebSocket("ws://" + location.host + "/chat/main");
                 this.socket = socket;
                 socket.onmessage = (e) => {
                     let {messages} = this.state;

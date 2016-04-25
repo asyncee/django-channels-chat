@@ -1,10 +1,21 @@
 from channels.routing import route
+from channels.sessions import channel_session
 
-from . import consumers
+from .message_router import get_router
+from .engine import get_engine
+
+
+router = get_router()
+engine = get_engine()
 
 
 routing = [
-    route("websocket.connect", consumers.ws_connect),
-    route("websocket.receive", consumers.ws_receive),
-    route("websocket.disconnect", consumers.ws_disconnect),
+    route("websocket.connect", channel_session(router.handle_connect), path=r"(?P<room>\w)"),
+    route("websocket.receive", channel_session(router.handle_receive)),
+    route("websocket.disconnect", channel_session(router.handle_disconnect)),
+
+    route("chat.connect", engine.on_connect),
+    route("chat.message", engine.on_message),
+    route("chat.command", engine.on_command),
+    route("chat.disconnect", engine.on_disconnect),
 ]
