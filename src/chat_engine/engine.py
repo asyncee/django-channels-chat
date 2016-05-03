@@ -12,9 +12,7 @@ from . import conf
 
 @channel_session
 def on_connect(message):
-    print('on connect')
     payload = message.content['text']
-    print(payload)
     message.channel_session['user'] = payload['username']
     message.reply_channel.send(messages.system(_('Welcome to the chat!')))
     Group('chat').send(messages.system(_('User %(username)s joined chat') % payload))
@@ -23,7 +21,6 @@ def on_connect(message):
 
 @channel_session
 def on_disconnect(message):
-    print('on disconnect')
     Group('chat').discard(message.reply_channel)
     Group('chat').send(messages.system(
         _('User %(user)s left chat') % message.channel_session))
@@ -31,7 +28,6 @@ def on_disconnect(message):
 
 @channel_session
 def on_message(message):
-    print('on message')
     payload = message.content['text']
     user = message.channel_session['user']
     message = messages.info(payload['text'], user)
@@ -40,7 +36,6 @@ def on_message(message):
 
 @channel_session
 def on_command(message):
-    print('on command')
     payload = message.content['text']
     user = message.channel_session['user']
     command, *args = payload['text'].strip().split()

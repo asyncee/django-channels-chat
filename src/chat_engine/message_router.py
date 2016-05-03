@@ -10,9 +10,6 @@ from . import conf
 
 class MessageRouter:
 
-    def handle_connect(self, message, room):
-        message.channel_session['room'] = room
-
     def handle_receive(self, message):
         message, payload = self.decode_message(message)
         action = payload['type']
@@ -26,9 +23,6 @@ class MessageRouter:
             else:
                 self.route('chat.message', message)
 
-    def handle_disconnect(self, message):
-        self.route('chat.disconnect', message)
-
     def decode_message(self, message):
         payload = json.loads(message.content['text'])
         message.content['text'] = payload
@@ -40,4 +34,3 @@ class MessageRouter:
 
 def get_router(*args, **kwargs):
     return import_string(conf.CHAT_ROUTER)(*args, **kwargs)
-
