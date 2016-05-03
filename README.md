@@ -3,6 +3,11 @@
 This is basic chat implementation, to demonstrate the power of **channels**.
 
 
+### Demonstration
+
+![demo image](https://github.com/asyncee/django-channels-chat/master/src/demo.gif)
+
+
 ### Installation
 
     git clone https://github.com/asyncee/django-channels-chat.git
