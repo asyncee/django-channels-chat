@@ -23,6 +23,9 @@ class MessageRouter:
             else:
                 self.route('chat.message', message)
 
+    def handle_disconnect(self, message):
+        self.route('chat.disconnect', message)
+
     def decode_message(self, message):
         payload = json.loads(message.content['text'])
         message.content['text'] = payload

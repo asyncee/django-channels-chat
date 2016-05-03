@@ -11,6 +11,7 @@ engine = get_engine()
 
 routing = [
     route("websocket.receive", channel_session(router.handle_receive)),
+    route("websocket.disconnect", channel_session(router.handle_disconnect)),
 
     route("chat.connect", engine.on_connect),
     route("chat.message", engine.on_message),
