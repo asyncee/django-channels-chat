@@ -2,6 +2,10 @@
 
 This is basic chat implementation, to demonstrate the power of **channels**.
 
+Note: project is based on old software (django 1.9, channels 0.11), 
+but the main concept is still alive, so you can use it as
+education material.
+
 
 ### Demonstration
 
